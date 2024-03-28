@@ -166,6 +166,7 @@ export class PageSearcher {
     matchedResult: DefaultMatchResultItem[],
   ) {
     const { content, toc, domain } = item;
+    console.log('content:', content);
     if (!content.length) {
       return;
     }

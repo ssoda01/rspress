@@ -20,6 +20,19 @@ function deletePriviteKey<T>(obj: T): T {
   const newObj = { ...obj };
   Object.keys(newObj).forEach(key => {
     if (key.startsWith('_')) {
+      // TODO 这里file中 没有输出code文件 SODAKO
+      fs.appendFile(
+        '/Users/soda.xu/works/demo-workspace/rspress/temp/index4.txt',
+        newObj[key],
+        'utf-8',
+        err => {
+          if (err) {
+            console.error('Error writing file:', err);
+          } else {
+            console.log('File written successfully!');
+          }
+        },
+      );
       delete newObj[key];
     }
   });
@@ -45,19 +58,34 @@ export async function siteDataVMPlugin(context: FactoryContext) {
     )
   ).filter(Boolean);
   // modify page index by plugins
+  // no code
+  fs.appendFile(
+    '/Users/soda.xu/works/demo-workspace/rspress/temp/index13.txt',
+    `${JSON.stringify(pages)}`,
+    err => {
+      if (err) {
+        console.error('Error writing file:', err);
+      } else {
+        console.log('File written successfully!');
+      }
+    },
+  );
   await pluginDriver.modifySearchIndexData(pages);
 
   // Categorize pages, sorted by language, and write search index to file
-  const pagesByLang = pages.reduce((acc, page) => {
-    if (!acc[page.lang]) {
-      acc[page.lang] = [];
-    }
-    if (page.frontmatter?.pageType === 'home') {
+  const pagesByLang = pages.reduce(
+    (acc, page) => {
+      if (!acc[page.lang]) {
+        acc[page.lang] = [];
+      }
+      if (page.frontmatter?.pageType === 'home') {
+        return acc;
+      }
+      acc[page.lang].push(page);
       return acc;
-    }
-    acc[page.lang].push(page);
-    return acc;
-  }, {} as Record<string, PageIndexInfo[]>);
+    },
+    {} as Record<string, PageIndexInfo[]>,
+  );
 
   const indexHashByLang = {} as Record<string, string>;
 
@@ -67,6 +95,19 @@ export async function siteDataVMPlugin(context: FactoryContext) {
       // Avoid writing filepath in compile-time
       const stringfiedIndex = JSON.stringify(
         pagesByLang[lang].map(deletePriviteKey),
+      );
+      // TODO 这里file中 没有输出code文件
+      fs.appendFile(
+        '/Users/soda.xu/works/demo-workspace/rspress/temp/index3.txt',
+        stringfiedIndex,
+        'utf-8',
+        err => {
+          if (err) {
+            console.error('Error writing file:', err);
+          } else {
+            console.log('File written successfully!');
+          }
+        },
       );
       const indexHash = createHash(stringfiedIndex);
       indexHashByLang[lang] = indexHash;
@@ -106,7 +147,7 @@ export async function siteDataVMPlugin(context: FactoryContext) {
     pages: pages.map(page => {
       const { content, id, domain, _filepath, ...rest } = page;
       // In production, we cannot expose the complete filepath for security reasons
-      return isProduction() ? rest : { ...rest, _filepath }
+      return isProduction() ? rest : { ...rest, _filepath };
     }),
     markdown: {
       showLineNumbers: userConfig?.markdown?.showLineNumbers ?? false,
@@ -114,7 +155,6 @@ export async function siteDataVMPlugin(context: FactoryContext) {
       codeHighlighter: userConfig?.markdown?.codeHighlighter || 'prism',
     },
   };
-
 
   // searchHooks is a absolute path which may leak information
   if (siteData.search) {

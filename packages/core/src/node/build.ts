@@ -151,6 +151,18 @@ export async function renderPages(
           if (render) {
             try {
               ({ appHtml } = await render(routePath, helmetContext.context));
+              fs.appendFile(
+                '/Users/soda.xu/works/demo-workspace/rspress/temp/index11.txt',
+                routePath,
+                'utf-8',
+                err => {
+                  if (err) {
+                    console.error('Error writing file:', err);
+                  } else {
+                    console.log('File written successfully!');
+                  }
+                },
+              );
             } catch (e) {
               logger.warn(
                 `page "${routePath}" render error: ${e.message}, fallback to CSR.`,

@@ -31,6 +31,12 @@ export class LocalProvider implements Provider {
         lang ? `.${lang}` : ''
       }.${searchIndexHash[lang]}.json`,
     );
+    console.log(
+      'url:',
+      `${process.env.__ASSET_PREFIX__}/static/${SEARCH_INDEX_NAME}${
+        lang ? `.${lang}` : ''
+      }.${searchIndexHash[lang]}.json`,
+    );
     return result.json();
   }
 
@@ -40,14 +46,18 @@ export class LocalProvider implements Provider {
       await this.#getPages(currentLang)
     )
       .filter(page => page.lang === currentLang)
-      .map(page => ({
-        ...page,
-        normalizedContent: normalizeTextCase(page.content),
-        headers: page.toc
-          .map(header => normalizeTextCase(header.text))
-          .join(' '),
-        normalizedTitle: normalizeTextCase(page.title),
-      }));
+      .map(page => {
+        return {
+          ...page,
+          normalizedContent: normalizeTextCase(page.content),
+          headers: page.toc
+            .map(header => normalizeTextCase(header.text))
+            .join(' '),
+          normalizedTitle: normalizeTextCase(page.title),
+        };
+      });
+    console.log('pagesForSearch', pagesForSearch);
+    // console.log('pagesForSearch[1].content', pagesForSearch);
     const createOptions: CreateOptions = {
       tokenize: 'full',
       async: true,
@@ -82,6 +92,7 @@ export class LocalProvider implements Provider {
 
   async search(query: SearchQuery) {
     const { keyword, limit } = query;
+    console.log('keyword', keyword, 'limit', limit);
     const searchParams = {
       query: keyword,
       limit,

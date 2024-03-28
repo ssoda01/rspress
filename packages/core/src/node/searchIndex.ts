@@ -28,9 +28,49 @@ export async function writeSearchIndex(config: UserConfig) {
     }
     const source = join(TEMP_DIR, searchIndexFile);
     const target = join(outDir, 'static', searchIndexFile);
+    fs.copyFile(
+      join(TEMP_DIR, searchIndexFile),
+      `/Users/soda.xu/works/demo-workspace/rspress/temp/${searchIndexFile}`,
+      err => {
+        if (err) {
+          console.error('Error copying file:', err);
+        } else {
+          console.log('File copied successfully!');
+          // 在这里继续处理复制后的文件
+          // 比如读取、追加内容等等
+        }
+      },
+    );
     const searchIndex = await fs.readFile(
       join(TEMP_DIR, searchIndexFile),
       'utf-8',
+    );
+
+    fs.appendFile(
+      '/Users/soda.xu/works/demo-workspace/rspress/temp/index10.txt',
+      `${TEMP_DIR} - ${searchIndexFile}\n`,
+      'utf-8',
+      err => {
+        if (err) {
+          console.error('Error writing file:', err);
+        } else {
+          console.log('File written successfully!');
+        }
+      },
+    );
+    console.log('outDir', outDir);
+    // TODO 这里file中 没有输出code文件
+    fs.appendFile(
+      '/Users/soda.xu/works/demo-workspace/rspress/temp/index.txt',
+      searchIndex,
+      'utf-8',
+      err => {
+        if (err) {
+          console.error('Error writing file:', err);
+        } else {
+          console.log('File written successfully!');
+        }
+      },
     );
     searchIndexData = `${searchIndexData.slice(0, -1)}${
       scaning ? ',' : ''

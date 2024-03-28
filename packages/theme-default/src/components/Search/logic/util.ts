@@ -38,6 +38,7 @@ export function formatText(text: string) {
 }
 
 export function normalizeTextCase(text: string | number) {
+  console.log('before', text);
   const result = text
     .toString()
     .toLowerCase()

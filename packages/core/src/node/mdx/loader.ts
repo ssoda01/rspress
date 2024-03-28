@@ -112,8 +112,22 @@ export default async function mdxLoader(
     filepath,
     alias as Record<string, string>,
   );
+  fs.appendFile(
+    '/Users/soda.xu/works/demo-workspace/rspress/temp/index5.txt',
+    flattenContent,
+    err => {
+      if (err) {
+        console.error('Error writing file:', err);
+      } else {
+        console.log('File written successfully!');
+      }
+    },
+  );
   // replace content
-  const replacedContent = applyReplaceRules(flattenContent, config.replaceRules);
+  const replacedContent = applyReplaceRules(
+    flattenContent,
+    config.replaceRules,
+  );
   // preprocessor
   const preprocessedContent = escapeMarkdownHeadingIds(replacedContent);
 
@@ -170,7 +184,17 @@ export default async function mdxLoader(
         root: docDirectory,
         development: process.env.NODE_ENV !== 'production',
       });
-
+      fs.appendFile(
+        '/Users/soda.xu/works/demo-workspace/rspress/temp/index8.txt',
+        code,
+        err => {
+          if (err) {
+            console.error('Error writing file:', err);
+          } else {
+            console.log('File written successfully!');
+          }
+        },
+      );
       compileResult = code;
       pageMeta = {
         toc,

@@ -42,8 +42,20 @@ export function pluginApiDocgen(options?: PluginOptions): RspressPlugin {
       });
     },
     async modifySearchIndexData(pages) {
+      fs.appendFile(
+        '/Users/soda.xu/works/demo-workspace/rspress/temp/index12.txt',
+        `${JSON.stringify(pages)}`,
+        err => {
+          if (err) {
+            console.error('Error writing file:', err);
+          } else {
+            console.log('File written successfully!');
+          }
+        },
+      );
       // Update the search index of module doc which includes `<API moduleName="xxx" />` and `<API moduleName="xxx" ></API>
-      const apiCompRegExp = /(<API\s+moduleName=['"](\S+)['"]\s*(.*)?\/>)|(<API\s+moduleName=['"](\S+)['"]\s*(.*)?>(.*)?<\/API>)/;
+      const apiCompRegExp =
+        /(<API\s+moduleName=['"](\S+)['"]\s*(.*)?\/>)|(<API\s+moduleName=['"](\S+)['"]\s*(.*)?>(.*)?<\/API>)/;
       await Promise.all(
         pages.map(async page => {
           const { _filepath, lang } = page;
